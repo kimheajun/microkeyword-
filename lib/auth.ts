@@ -6,7 +6,7 @@
 
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { getDb, User } from "./db";
+import { User } from "./db";
 
 const COOKIE_NAME = "mk_session";
 const SESSION_DAYS = 30;

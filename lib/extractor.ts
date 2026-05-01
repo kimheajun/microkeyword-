@@ -53,9 +53,9 @@ export function buildRegionCategory(address: string, pois: POI[]): string[] {
   }
 
   // 2) 동+구 결합 (정식 + 약식)
-  if (dongs.length && gus.length) {
-    const dong = dongs[0];
-    const gu = gus[0];
+  const dong = dongs[0];
+  const gu = gus[0];
+  if (dong && gu) {
     result.add(`${gu} ${dong}`); // "강남구 논현동"
     const guStem = gu.replace(/구$/, "");
     const dongStem = dong.replace(/(\d*동)$/, "");

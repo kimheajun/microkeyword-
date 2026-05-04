@@ -58,6 +58,39 @@ CREATE TABLE IF NOT EXISTS usage_log (
 
 CREATE INDEX IF NOT EXISTS idx_usage_user_date ON usage_log(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_cache_created ON analyze_cache(created_at);
+
+-- 카카오톡 봇: 단톡방 메시지 수집
+CREATE TABLE IF NOT EXISTS kakao_room (
+  id BIGSERIAL PRIMARY KEY,
+  room_name TEXT UNIQUE NOT NULL,
+  description TEXT,
+  active BOOLEAN DEFAULT TRUE,
+  created_at BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS kakao_message (
+  id BIGSERIAL PRIMARY KEY,
+  room_id BIGINT REFERENCES kakao_room(id) ON DELETE CASCADE,
+  sender TEXT NOT NULL,
+  content TEXT NOT NULL,
+  sent_at BIGINT NOT NULL,
+  received_at BIGINT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_kakao_msg_room_date ON kakao_message(room_id, sent_at);
+CREATE INDEX IF NOT EXISTS idx_kakao_msg_received ON kakao_message(received_at);
+
+-- 회의안 산출물
+CREATE TABLE IF NOT EXISTS meeting_minutes (
+  id BIGSERIAL PRIMARY KEY,
+  room_id BIGINT REFERENCES kakao_room(id) ON DELETE SET NULL,
+  week_start BIGINT NOT NULL,
+  week_end BIGINT NOT NULL,
+  topics_json TEXT,
+  agent_drafts_json TEXT,
+  final_md TEXT,
+  created_at BIGINT NOT NULL
+);
 `;
 
 export async function ensureMigrated() {
